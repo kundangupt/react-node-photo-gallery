@@ -1,33 +1,31 @@
 const express = require('express');
+const dotenv = require('dotenv');
 const cors = require('cors');
 const { json } = require('body-parser');
 const axios = require('axios');
 
 const app = express();
-// eslint-disable-next-line no-undef
-const PORT = process.env.PORT || 7000;
 
 app.use(cors());
 app.use(json());
 
-const BASE_URL = 'https://api.cloudinary.com/v1_1/dzhgrubml'; // Replace 'your_cloud_name' with your Cloudinary cloud name
+const { parsed: config } = dotenv.config();
+
+const BASE_URL = `https://api.cloudinary.com/v1_1/${config.CLOUD_NAME}`;
 
 const auth = {
-  username: '525699621141772', // Replace 'your_api_key' with your Cloudinary API key
-  password: 'pIEeSKolQ_av6Qb7n4pfucwF_TA', // Replace 'your_api_secret' with your Cloudinary API secret
+  username: config.API_KEY,
+  password: config.API_SECRET,
 };
 
 app.get('/photos', async (req, res) => {
   try {
-    const { next_cursor } = req.query;
-
-    const response = await axios.get(`${BASE_URL}/resources/image`, {
+    const response = await axios.get(BASE_URL + '/resources/image/url', {
       auth,
       params: {
-        next_cursor,
+        next_cursor: req.query.next_cursor,
       },
     });
-
     console.log(response.data);
     return res.send(response.data);
   } catch (error) {
@@ -38,15 +36,12 @@ app.get('/photos', async (req, res) => {
 
 app.get('/search', async (req, res) => {
   try {
-    const { expression } = req.query;
-
-    const response = await axios.get(`${BASE_URL}/resources/search`, {
+    const response = await axios.get(BASE_URL + '/resources/search', {
       auth,
       params: {
-        expression,
+        expression: req.query.expression,
       },
     });
-
     console.log(response.data);
     return res.send(response.data);
   } catch (error) {
@@ -55,6 +50,6 @@ app.get('/search', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(7000, () => {
+  console.log('Server is running on port 7000');
 });
