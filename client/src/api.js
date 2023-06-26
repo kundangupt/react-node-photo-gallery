@@ -8,10 +8,8 @@ export const getImages = async (nextCursor) => {
 	}
 
 	const response = await fetch(`${API_URL}/photos?${params}`);
-	console.log()
 	const responseJson = await response.json();
-
-	return responseJson;
+    return responseJson;
 };
 
 export const searchImages = async (searchValue, nextCursor) => {

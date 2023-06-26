@@ -20,13 +20,12 @@ const auth = {
 
 app.get('/photos', async (req, res) => {
   try {
-    const response = await axios.get(BASE_URL + '/resources/image/url', {
+    const response = await axios.get(BASE_URL + '/resources/image', {
       auth,
       params: {
         next_cursor: req.query.next_cursor,
       },
     });
-    console.log(response.data);
     return res.send(response.data);
   } catch (error) {
     console.error('Error fetching photos:', error);
@@ -42,7 +41,6 @@ app.get('/search', async (req, res) => {
         expression: req.query.expression,
       },
     });
-    console.log(response.data);
     return res.send(response.data);
   } catch (error) {
     console.error('Error searching photos:', error);
